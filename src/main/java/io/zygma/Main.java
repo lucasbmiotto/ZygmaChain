@@ -1,5 +1,6 @@
 package io.zygma;
 import io.zygma.blockchain.Blockchain;
+import io.zygma.blockchain.Transaction;
 import io.zygma.wallet.Wallet;
 
 // Teste pra ver se ta rodando mesmo, visualmente
@@ -11,7 +12,7 @@ import io.zygma.wallet.Wallet;
  *  Block{timestamp=1755884797036, previousHash='0', nonce=0, hash='9e85a813bce44d222f6fcb929dfe8c11253b34f99eb9cbb3f57a2a794262068a', data='Primeiro bloco da ZygmaChain'}
  */
 
- /*  REPORT DA BLOCKCHAIN COMPLETA TESTE:
+/*  REPORT DA BLOCKCHAIN COMPLETA TESTE:
  *
  *  > Task :run
  *  blocos adicionados na ZygmaChain...
@@ -26,7 +27,7 @@ import io.zygma.wallet.Wallet;
  *  Blockchain válida? true
  */
 
- /*  REPORT DO TESTE DA WALLET E ECDSA:
+/*  REPORT DO TESTE DA WALLET E ECDSA:
  *
  *  > Task :run
  *  --- Testando Wallet e ECDSA ---
@@ -36,6 +37,17 @@ import io.zygma.wallet.Wallet;
  *
  */
 
+ /*  REPORT DO TESTE VISUAL DE TRANSAÇÃO:
+ *
+ *  > Task :run
+ *  --- Testando Transaction ---
+ *  Transação criada: Transaction{from='15d2e5f73296314a56d595869a33ed6782022401', to='5203a857963025bc5d8e13e22251dd35fd5f45fe', amount=50.0, signature=<unsigned>}
+ *  Transação assinada: Transaction{from='15d2e5f73296314a56d595869a33ed6782022401', to='5203a857963025bc5d8e13e22251dd35fd5f45fe', amount=50.0, signature=MEQCIG0wu+E4JI32ÔÇª}
+ *  Assinatura válida? true
+ *  Assinatura válida para transação adulterada? false
+ *
+ *  BUILD SUCCESSFUL
+ */
 public class Main {
     public static void main(String[] args) {
 
@@ -48,19 +60,24 @@ public class Main {
         System.out.println(blockchain);
         System.out.println("Blockchain é válida? " + blockchain.isValid());
 
-        // Teste da Wallet e ECDSA
-        System.out.println("\n--- Testando Wallet e ECDSA ---");
-        Wallet wallet = new Wallet();
-        System.out.println("Endereço da wallet: " + wallet.getAddress());
+        System.out.println("\n--- Testando Transaction ---");
+        Wallet sender = new Wallet();
+        Wallet receiver = new Wallet();
 
-        String mensagem = "Teste de assinatura";
-        byte[] assinatura = wallet.sign(mensagem);
-        boolean valido = Wallet.verify(wallet.getPublicKey(), mensagem, assinatura);
+        Transaction tx = new Transaction(sender.getAddress(), receiver.getAddress(), 50.0);
+        System.out.println("Transação criada: " + tx);
 
-        System.out.println("Assinatura válida? " + valido);
+        tx.signTransaction(sender.getPrivateKey());
+        System.out.println("Transação assinada: " + tx);
 
-        // Testando verificação com mensagem alterada
-        boolean invalido = Wallet.verify(wallet.getPublicKey(), "mensagem alterada", assinatura);
-        System.out.println("Assinatura válida para mensagem alterada? " + invalido);
+        boolean assinaturaValida = tx.isSignatureValid(sender.getPublicKey());
+        System.out.println("Assinatura válida? " + assinaturaValida);
+
+        // Tenta adultera a transação e verifica assinatura
+        Transaction txAdulterada = new Transaction(sender.getAddress(), receiver.getAddress(), 999.0);
+        // assinatura falsa copia assinatura da original
+        txAdulterada.setSignature(tx.getSignature()); 
+        boolean assinaturaInvalida = txAdulterada.isSignatureValid(sender.getPublicKey());
+        System.out.println("Assinatura válida para transação adulterada? " + assinaturaInvalida);
     }
 }
