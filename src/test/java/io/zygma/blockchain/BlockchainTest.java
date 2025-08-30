@@ -8,6 +8,7 @@ import java.util.List;
 
 public class BlockchainTest {
 
+    // Report do Teste: BUILD SUCCESSFUL in 55s 4 actionable tasks: 4 executed
     @Test
     void chainShouldStartWithGenesisBlock() {
         Blockchain bc = new Blockchain(2);

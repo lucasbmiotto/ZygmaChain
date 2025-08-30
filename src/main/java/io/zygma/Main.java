@@ -1,7 +1,6 @@
 package io.zygma;
-
-// import io.zygma.blockchain.Block;
 import io.zygma.blockchain.Blockchain;
+import io.zygma.wallet.Wallet;
 
 // Teste pra ver se ta rodando mesmo, visualmente
 
@@ -27,21 +26,41 @@ import io.zygma.blockchain.Blockchain;
  *  Blockchain válida? true
  */
 
+ /*  REPORT DO TESTE DA WALLET E ECDSA:
+ *
+ *  > Task :run
+ *  --- Testando Wallet e ECDSA ---
+ *  Endereço da wallet: 1744aeb313208c17804b6c9deefbaa66fbc0162f
+ *  Assinatura válida? true
+ *  Assinatura válida para mensagem alterada? false
+ *
+ */
 
 public class Main {
     public static void main(String[] args) {
 
         Blockchain blockchain = new Blockchain(2);
-
         System.out.println("blocos adicionados na ZygmaChain...\n");
-
         blockchain.addBlock("tx: X paga 10 ZYG para U");
         blockchain.addBlock("tx: U paga 5 ZYG para Y");
         blockchain.addBlock("tx: Y paga 2 ZYG para A");
-
         System.out.println("Blockchain criada:\n");
         System.out.println(blockchain);
-
         System.out.println("Blockchain é válida? " + blockchain.isValid());
+
+        // Teste da Wallet e ECDSA
+        System.out.println("\n--- Testando Wallet e ECDSA ---");
+        Wallet wallet = new Wallet();
+        System.out.println("Endereço da wallet: " + wallet.getAddress());
+
+        String mensagem = "Teste de assinatura";
+        byte[] assinatura = wallet.sign(mensagem);
+        boolean valido = Wallet.verify(wallet.getPublicKey(), mensagem, assinatura);
+
+        System.out.println("Assinatura válida? " + valido);
+
+        // Testando verificação com mensagem alterada
+        boolean invalido = Wallet.verify(wallet.getPublicKey(), "mensagem alterada", assinatura);
+        System.out.println("Assinatura válida para mensagem alterada? " + invalido);
     }
 }
