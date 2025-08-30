@@ -1,44 +1,56 @@
-# 🌐⛓️ ZygmaChain ⛓️🌐
+# ZygmaChain
 
 > Uma blockchain educacional e modular construída em Java, com foco em arquitetura P2P, contratos inteligentes, segurança criptográfica, testes automatizados e infraestrutura com CI/CD e Docker.
 
 ---
 
-## 🧱 Status do Projeto
+## Status do Projeto
 
-🚧 **Em desenvolvimento** — Primeiros blocos e infraestrutura básica criados com sucesso.
+**Em desenvolvimento** — Infraestrutura básica, blockchain funcional, carteiras, transações e testes automatizados implementados.
 
 ---
 
-## 🗂️ Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 ZygmaChain/  
-├── src/  
-│ ├── blockchain/ # Blocos, Blockchain, Transações  
-├── test/ # Testes unitários e integração  
-├── .gitignore  
-├── README.md  
-├── build.gradle 
+├── src/
+│   ├── blockchain/         # Blocos, Blockchain, Transações
+│   ├── crypto/             # ECDSA, hashing, segurança
+│   ├── wallet/             # Gerenciamento de carteiras
+├── test/                   # Testes unitários e integração
+├── .gitignore
+├── README.md
+├── LICENSE
+├── build.gradle
 └── Dockerfile
 ```
 
 ---
 
-## ✅ Funcionalidades implementadas
+## Funcionalidades implementadas
 
 - Estrutura básica do projeto com Gradle.
-- Classe `Block` contendo:
-  - `previousHash`, `timestamp`, `data`, `nonce` e `hash`.
-  - Hash calculado usando algoritmo SHA-256.
-- Utilitário `HashUtils` para hashing com SHA-256.
+- Blockchain funcional:
+  - Classe `Block` com `previousHash`, `timestamp`, `data`, `nonce` e `hash`.
+  - Classe `Blockchain` com validação, mineração e encadeamento de blocos.
+- Carteira digital (`Wallet`):
+  - Geração de chaves ECDSA.
+  - Endereço gerado por hash da chave pública.
+  - Assinatura e verificação de mensagens.
+- Transações (`Transaction`):
+  - Criação, assinatura e validação de transações entre carteiras.
+  - Teste de adulteração de transação.
+- Utilitários criptográficos:
+  - `HashUtils` para SHA-256.
+  - `ECDSA` para geração de chaves, assinatura e verificação.
 - Testes automatizados com JUnit:
-  - Garantia de que hashes são determinísticos.
-  - Verificação de alteração de hash ao mudar os dados.
+  - Testes de bloco, blockchain, carteira, ECDSA e transações.
+  - Garantia de integridade, assinatura e validação.
 
 ---
 
-## 🧠 Tecnologias e Boas Práticas
+## Tecnologias e Boas Práticas
 
 | Categoria        | Ferramentas                    |
 | ---------------- | ------------------------------ |
@@ -49,32 +61,34 @@ ZygmaChain/
 
 ---
 
-## 🧪 Como rodar os testes atualmente
+## Como rodar os testes atualmente
+
+No terminal, execute:
 
 ```bash
 ./gradlew test
 
 ```
 
-Saída:
+Saída esperada:
 
 ```
-BUILD SUCCESSFUL in 39s
-4 actionable tasks: 4 executed
+BUILD SUCCESSFUL in Xs
+N actionable tasks: N executed
 
 ```
 
 ----------
 
-## 🚀 Próximos Passos
+## Próximos Passos
 
--   Implementar a classe `Blockchain`.
+-   Implementar rede P2P para comunicação entre nós.
     
--   Criar lógica de validação e encadeamento de blocos.
+-   Adicionar contratos inteligentes.
     
--   Adicionar geração de carteira e chaves (ECDSA).
+-   Integrar Docker e CI/CD.
     
--   Começar a estrutura básica da rede P2P.
+-   Melhorar interface de usuário e relatórios.
     
 
 ----------
