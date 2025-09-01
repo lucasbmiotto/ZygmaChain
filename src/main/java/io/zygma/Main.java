@@ -2,65 +2,71 @@ package io.zygma;
 import io.zygma.blockchain.Blockchain;
 import io.zygma.blockchain.Transaction;
 import io.zygma.wallet.Wallet;
+import io.zygma.blockchain.Block;
+import java.util.List;
 
 // Teste pra ver se ta rodando mesmo, visualmente
 
-/*  REPORT DO PRIMEIRO BLOCO CRIADO TESTE:
- * 
- *  > Task :run
- *  Bloco criado:
- *  Block{timestamp=1755884797036, previousHash='0', nonce=0, hash='9e85a813bce44d222f6fcb929dfe8c11253b34f99eb9cbb3f57a2a794262068a', data='Primeiro bloco da ZygmaChain'}
- */
-
-/*  REPORT DA BLOCKCHAIN COMPLETA TESTE:
+/*  REPORT DO TESTE DE MÚLTIPLAS TRANSAÇÕES NA BLOCKCHAIN:
  *
  *  > Task :run
- *  blocos adicionados na ZygmaChain...
  *
+ *  --- Testando Blockchain com múltiplas transações ---
  *  Blockchain criada:
  *
- *  Block{timestamp=1756315078981, previousHash='0', nonce=0, hash='979f0e66d31a4081c47cc9b622f5a345f945544b5cff31a98117bc867d6a3fbf', data='Genesis Block'}
- *  Block{timestamp=1756315079033, previousHash='979f0e66d31a4081c47cc9b622f5a345f945544b5cff31a98117bc867d6a3fbf', nonce=18, hash='00cbe8547c0e64bf012753c3d96893ab7af993901a7b1b10cce77837ffe1d408', data='tx: X paga 10 ZYG para U'}
- *  Block{timestamp=1756315079052, previousHash='00cbe8547c0e64bf012753c3d96893ab7af993901a7b1b10cce77837ffe1d408', nonce=105, hash='003d57cf31f9fd9c18c9c4797e650b527350836924aff2f26804e1d2757be611', data='tx: U paga 5 ZYG para Y'}
- *  Block{timestamp=1756315079078, previousHash='003d57cf31f9fd9c18c9c4797e650b527350836924aff2f26804e1d2757be611', nonce=279, hash='00d0512667c41c569946174f52a56aa4f35544ebd1b122ac8e76a8230f778939', data='tx: Y paga 2 ZYG para A'}
+ *  Block{timestamp=1756745261465, previousHash='0', nonce=0, hash='af2c0b66a581269d727b3ef981991ac9666bde928a157ce08294b2d23b9a976d', txCount=0, data='Genesis Block'}
+ *  Block{timestamp=1756745261483, previousHash='af2c0b66a581269d727b3ef981991ac9666bde928a157ce08294b2d23b9a976d', nonce=214, hash='00871f3768f971056e7b260fa70d0e8a6c364450a26a20b614f038bc4b0646b9', txCount=2, data=''}
+ *    Transaction{from='9c0f5db3309b1b48965fb30c1f6a6807cbc48ea2', to='80c531176b3894e089e15b96b475bd1817405efd', amount=5.0, signature=MEYCIQC6BYRE/Nxo…}
+ *    Transaction{from='9c0f5db3309b1b48965fb30c1f6a6807cbc48ea2', to='80c531176b3894e089e15b96b475bd1817405efd', amount=1.5, signature=MEUCIQCqo4hK5bOC…}
  *
  *  Blockchain válida? true
- */
-
-/*  REPORT DO TESTE DA WALLET E ECDSA:
- *
- *  > Task :run
- *  --- Testando Wallet e ECDSA ---
- *  Endereço da wallet: 1744aeb313208c17804b6c9deefbaa66fbc0162f
- *  Assinatura válida? true
- *  Assinatura válida para mensagem alterada? false
  *
  */
 
- /*  REPORT DO TESTE VISUAL DE TRANSAÇÃO:
+/*  REPORT DO TESTE DE ASSINATURA DE TRANSAÇÃO:
  *
  *  > Task :run
- *  --- Testando Transaction ---
- *  Transação criada: Transaction{from='15d2e5f73296314a56d595869a33ed6782022401', to='5203a857963025bc5d8e13e22251dd35fd5f45fe', amount=50.0, signature=<unsigned>}
- *  Transação assinada: Transaction{from='15d2e5f73296314a56d595869a33ed6782022401', to='5203a857963025bc5d8e13e22251dd35fd5f45fe', amount=50.0, signature=MEQCIG0wu+E4JI32ÔÇª}
+ *
+ *  --- Testando assinatura de transação ---
+ *  Transação criada: Transaction{from='61d44ca91ed6a8b969e803f08a27099896605269', to='2fa00a08dd75b34f55f9da1e5ed23bbebb3ff934', amount=50.0, signature=<unsigned>}
+ *  Transação assinada: Transaction{from='61d44ca91ed6a8b969e803f08a27099896605269', to='2fa00a08dd75b34f55f9da1e5ed23bbebb3ff934', amount=50.0, signature=MEQCICehTPyfjZ2K…}
  *  Assinatura válida? true
  *  Assinatura válida para transação adulterada? false
  *
  *  BUILD SUCCESSFUL
  */
+
 public class Main {
     public static void main(String[] args) {
+        testBlockchainComTransacoes();
+        testTransacaoAssinatura();
+    }
 
-        Blockchain blockchain = new Blockchain(2);
-        System.out.println("blocos adicionados na ZygmaChain...\n");
-        blockchain.addBlock("tx: X paga 10 ZYG para U");
-        blockchain.addBlock("tx: U paga 5 ZYG para Y");
-        blockchain.addBlock("tx: Y paga 2 ZYG para A");
-        System.out.println("Blockchain criada:\n");
-        System.out.println(blockchain);
-        System.out.println("Blockchain é válida? " + blockchain.isValid());
+    private static void testBlockchainComTransacoes() {
+        System.out.println("\n--- Testando Blockchain com múltiplas transações ---");
+        Wallet a = new Wallet();
+        Wallet b = new Wallet();
 
-        System.out.println("\n--- Testando Transaction ---");
+        Transaction t1 = new Transaction(a.getAddress(), b.getAddress(), 5.0);
+        t1.signTransaction(a.getPrivateKey());
+        Transaction t2 = new Transaction(a.getAddress(), b.getAddress(), 1.5);
+        t2.signTransaction(a.getPrivateKey());
+
+        Blockchain bc = new Blockchain(2);
+        bc.addBlock(List.of(t1, t2));
+
+        System.out.println("Blockchain criada:");
+        for (Block block : bc.getChain()) {
+            System.out.println(block);
+            for (Transaction tx : block.getTransactions()) {
+                System.out.println("  " + tx);
+            }
+        }
+        System.out.println("Blockchain válida? " + bc.isValid());
+    }
+
+    private static void testTransacaoAssinatura() {
+        System.out.println("\n--- Testando assinatura de transação ---");
         Wallet sender = new Wallet();
         Wallet receiver = new Wallet();
 
@@ -73,10 +79,8 @@ public class Main {
         boolean assinaturaValida = tx.isSignatureValid(sender.getPublicKey());
         System.out.println("Assinatura válida? " + assinaturaValida);
 
-        // Tenta adultera a transação e verifica assinatura
         Transaction txAdulterada = new Transaction(sender.getAddress(), receiver.getAddress(), 999.0);
-        // assinatura falsa copia assinatura da original
-        txAdulterada.setSignature(tx.getSignature()); 
+        txAdulterada.setSignature(tx.getSignature());
         boolean assinaturaInvalida = txAdulterada.isSignatureValid(sender.getPublicKey());
         System.out.println("Assinatura válida para transação adulterada? " + assinaturaInvalida);
     }

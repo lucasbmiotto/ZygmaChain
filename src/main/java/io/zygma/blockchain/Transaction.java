@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Objects;
 
-// Tem que ser uma classe pra fazer transações entre wallets, usando tudo que já foi feito
 public class Transaction {
     private final String senderAddress;
     private final String recipientAddress;
@@ -22,9 +21,7 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public String getData() {
-        return senderAddress + ":" + recipientAddress + ":" + amount;
-    }
+    public String getData() { return senderAddress + ":" + recipientAddress + ":" + amount; }
 
     public void signTransaction(PrivateKey privateKey) {
         this.signature = ECDSA.sign(privateKey, getData().getBytes());
